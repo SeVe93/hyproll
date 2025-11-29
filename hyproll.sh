@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Addict: sudo pacman -S hyprland jq
+#https://github.com/SeVe93/hyproll/
 
 SCRIPT_NAME="hyproll.sh"
 WINDOW_SPACING=100
