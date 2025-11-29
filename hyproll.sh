@@ -1,12 +1,11 @@
 #!/bin/bash
 
-#https://github.com/SeVe93/hyproll/
+https://github.com/SeVe93/hyproll/
 
 SCRIPT_NAME="hyproll.sh"
 WINDOW_SPACING=100
 FOLD_THRESHOLD=50
 RECALC_DELAY=0.1
-# Direction: "left" or "right"
 DIRECTION="left"
 
 monitor_info=$(hyprctl monitors -j)
@@ -18,20 +17,16 @@ folded_windows=$(echo "$windows" | jq "[.[] | select(.at[1] >= $monitor_height -
 
 folded_count=$(echo "$folded_windows" | jq 'length')
 
+i=0
+echo "$folded_windows" | jq -c '.[]' | while read window; do
+    address=$(echo "$window" | jq -r '.address')
+    offset=$((i * WINDOW_SPACING))
+    
+    hyprctl dispatch movewindowpixel exact $offset $monitor_height,address:$address
+    i=$((i + 1))
+done
 
-MAX_WINDOWS=$((monitor_width / WINDOW_SPACING))
-if [ $folded_count -gt $MAX_WINDOWS ]; then
-    ACTUAL_SPACING=$((monitor_width / folded_count))
-else
-    ACTUAL_SPACING=$WINDOW_SPACING
-fi
-
-
-if [ "$DIRECTION" = "right" ]; then
-    new_offset=$((monitor_width - ACTUAL_SPACING))
-else
-    new_offset=0
-fi
+new_offset=$((folded_count * WINDOW_SPACING))
 
 active_window=$(hyprctl activewindow -j)
 if [ "$active_window" != "null" ]; then
@@ -40,28 +35,3 @@ if [ "$active_window" != "null" ]; then
         hyprctl dispatch moveactive exact $new_offset $monitor_height
     fi
 fi
-
-sleep $RECALC_DELAY
-
-windows=$(hyprctl clients -j | jq "map(select(.workspace.id == $(hyprctl activeworkspace -j | jq -r '.id')))")
-folded_windows=$(echo "$windows" | jq "[.[] | select(.at[1] >= $monitor_height - $FOLD_THRESHOLD)] | sort_by(.at[0])")
-
-# For right direction, we need to reverse the order
-if [ "$DIRECTION" = "right" ]; then
-    folded_windows=$(echo "$folded_windows" | jq 'reverse')
-fi
-
-i=0
-echo "$folded_windows" | jq -c '.[]' | while read window; do
-    address=$(echo "$window" | jq -r '.address')
-    
-   
-    if [ "$DIRECTION" = "right" ]; then
-        offset=$((monitor_width - (i + 1) * ACTUAL_SPACING))
-    else
-        offset=$((i * ACTUAL_SPACING))  # Просто слева направо
-    fi
-    
-    hyprctl dispatch movewindowpixel exact $offset $monitor_height,address:$address
-    i=$((i + 1))
-done
