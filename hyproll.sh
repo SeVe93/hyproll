@@ -18,11 +18,19 @@ folded_windows=$(echo "$windows" | jq "[.[] | select(.at[1] >= $monitor_height -
 
 folded_count=$(echo "$folded_windows" | jq 'length')
 
-# Calculate new offset based on direction
-if [ "$DIRECTION" = "right" ]; then
-    new_offset=$((monitor_width - WINDOW_SPACING))
+
+MAX_WINDOWS=$((monitor_width / WINDOW_SPACING))
+if [ $folded_count -gt $MAX_WINDOWS ]; then
+    ACTUAL_SPACING=$((monitor_width / folded_count))
 else
-    new_offset=$((folded_count * $WINDOW_SPACING))
+    ACTUAL_SPACING=$WINDOW_SPACING
+fi
+
+
+if [ "$DIRECTION" = "right" ]; then
+    new_offset=$((monitor_width - ACTUAL_SPACING))
+else
+    new_offset=0
 fi
 
 active_window=$(hyprctl activewindow -j)
@@ -47,11 +55,11 @@ i=0
 echo "$folded_windows" | jq -c '.[]' | while read window; do
     address=$(echo "$window" | jq -r '.address')
     
-    # Calculate offset based on direction
+   
     if [ "$DIRECTION" = "right" ]; then
-        offset=$((monitor_width - (i + 1) * WINDOW_SPACING))
+        offset=$((monitor_width - (i + 1) * ACTUAL_SPACING))
     else
-        offset=$((i * $WINDOW_SPACING))
+        offset=$((i * ACTUAL_SPACING))  # Просто слева направо
     fi
     
     hyprctl dispatch movewindowpixel exact $offset $monitor_height,address:$address
