@@ -1,6 +1,5 @@
 #!/bin/bash
-
-https://github.com/SeVe93/hyproll/
+#https://github.com/SeVe93/hyproll/
 
 SCRIPT_NAME="hyproll.sh"
 WINDOW_SPACING=100
