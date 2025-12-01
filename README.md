@@ -59,18 +59,17 @@ https://github.com/user-attachments/assets/e629e042-2dcb-4fc8-8799-b2e3236af6ab
 
 
 
-<p>В начало конфига (плагины hyprland. в них нужно будет активировать hyprbar):<br>
-<code>exec-once = hyprpm reload</code></p>
 
-<p>В начало конфига
-<code>exec-once = hyprpm reload</code><br>
 
-#Бинд для разворачивания/сворачивания по номеру
-bind = SUPER, 1, exec, ~/.config/hypr/scripts/hyproll.sh raise 0
+<p>В начало конфига Hyprland</p>
+активируем плагин hyprbars
+<code>exec-once = hyprpm reload</code>
 
-#Бинд для "Сворачивания"
-bind = SUPER, A, exec, ~/.config/hypr/hyproll.sh
+<p>Бинд для разворачивания/сворачивания по номеру</p>
+<code>bind = SUPER, 1, exec, ~/.config/hypr/scripts/hyproll.sh raise 0</code>
 
+<p>Бинд для "Сворачивания"</p>
+<code>bind = SUPER, A, exec, ~/.config/hypr/hyproll.sh</code>
 
 <h2>Быстрая установка</h2>
 
@@ -80,5 +79,3 @@ bind = SUPER, A, exec, ~/.config/hypr/hyproll.sh
 
 </body>
 </html>
-
-**Full Changelog**: https://github.com/SeVe93/hyproll/compare/Hyprland...hyproll
