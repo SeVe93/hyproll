@@ -6,7 +6,7 @@
 </head>
 <body>
 
-<p><code>hyproll.sh</code>Hyprland bash-script: быстрое "свертывание" и развертывание окон Hyprland, сохраняя содержимае, размер и положение в пространстве.</p>
+<p><code>hyproll.sh</code>Hyprland bash-script: быстрое "свертывание" и развертывание окон Hyprland, сохраняя содержимое, размер и положение в пространстве.</p>
 
 <p>hyprctl + hyprpm + bash + jq<br>
 Очень легкое решение распределения пространства Hyprland</p>
