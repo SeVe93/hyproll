@@ -6,57 +6,39 @@
 </head>
 <body>
 
-<h1>hyproll</h1>
+<p><code>hyproll.sh</code>Hyprland bash-script: быстрое "свертывание" и развертывание окон Hyprland, сохраняя содержимае, размер и положение в пространстве.</p>
 
-<p><code>hyproll.sh</code> — bash-скрипт для Hyprland, реализующий «dock-подобное» свёртывание окон в нижнюю часть экрана.</p>
-
-<p>50 строк чистого баша (+jq).<br>
+<p>hyprctl + hyprpm + bash + jq<br>
 Очень легкое решение распределения пространства Hyprland</p>
 
+https://github.com/user-attachments/assets/2298bf8b-6a8b-4eae-b4ba-7c21cfdc0656
+
+https://github.com/user-attachments/assets/e629e042-2dcb-4fc8-8799-b2e3236af6ab
+
 <h2>Основная функциональность:</h2>
-<p>Создает "свернутую" панель окон в нижней части экрана, похожую на док или панель задач.</p>
-<p>По факту: просто переносит активную часть окна ниже зоны экнана, оставляя только шапку (hyprctl видит только размеры самого окна, что нам на руку), и выравнивает относительно соседнего.</p>
-<p>В итоге получаем легчайший трей приложений с сохранением размера окон для каждого "рабочего стола"  </p>
+<p>делит ширину экрана на равные ячейки с заданной длинной. </p>
+<p>При запуске скрипта - проверяет актуальное положение окон, опускает активное окно ниже уровня экрана в зону свободной ячейки</p>
+<p>При запуске скрипта с функцией "hyproll.sh raise №" - возвращает окно в положение "до сворачивания" . повторный запус функции возвращает окно в наш "трей" </p>
 
+<h2>Баги:</h2>
+<p>Могут быть проблемы с фокуссировкой на активное окно.   </p>
 
-![photo_1_2025-11-29_06-43-21](https://github.com/user-attachments/assets/dfeee8cd-a02d-4f01-8380-a36668894c94)
-![photo_2_2025-11-29_06-43-21](https://github.com/user-attachments/assets/fe6cc499-61b0-40e7-b078-650f35f65bc0)
-![photo_3_2025-11-29_06-43-21](https://github.com/user-attachments/assets/f01a2bf8-9c0f-439a-a59e-fe3cd1f84ada)
-
-https://github.com/user-attachments/assets/78cf083d-aa62-47c5-94ff-033c197ef4e5
-
-
-<h2>Как работает:</h2>
-<ul>
-<li>Находит все окна на текущем workspace.</li>
-<li>Определяет положение верхней части выбранного окна относительно "зоны сворачивания" (FOLD_THRESHOLD=50)px.</li>
-<li>Все окна, чье верхнее значение FOLD_THRESHOLD совпадает с "зоной сворачивания" - опускаются ниже уровня экрана, оставляя только шапку.</li>
-<li>Перераспределяет все свернутые окна с равными промежутками (WINDOW_SPACING)px с лева направа, либо справа налево, в зависимости от выбранной переменной: DIRECTION="left" (либо right).</li>
-<li>Перераспределяет "свернутые" окна при повторном применении скрипта (сворачивании окна) (мгновенного триггера без ущерба производительности пока не придумал...).</li>
-</ul>
-
-<p>Автоматическое определение монитора - получает размеры активного монитора.<br>
-Работа с активным рабочим пространством - обрабатывает только окна текущего workspace.<br>
-"Сворачивание" окон - окна ниже определенного порога (FOLD_THRESHOLD) считаются свернутыми.</p>
-
-<hr>
 
 <h2>Переменные конфигурации:</h2>
+расстояние между окнами
+<code>WINDOW_SPACING=100 </code></p>
+ порог для определения свернутых окон
+<code>FOLD_THRESHOLD=50 </code></p>
+ задержка перед перерасчетом позиций
+<code>RECALC_DELAY=0.1</code></p>
 
-<pre>WINDOW_SPACING=100 - расстояние между окнами
-FOLD_THRESHOLD=50  - порог для определения свернутых окон
-RECALC_DELAY=0.1   - задержка перед перерасчетом позиций
-DIRECTION="left"   - или "right" - направление размещения окон</pre>
 
-<hr>
 
 <h2>Зависимости:</h2>
 
 <ul>
-<li>hyprland - оконный менеджер<br>
-https://hypr.land/</li>
-<li>hyprplugins/hyprbar - шапка<br>
-https://github.com/hyprwm/hyprland-plugins</li>
+<li>[hyprland - оконный менеджер](https://hypr.land/)</li>
+<li>[hyprplugins/hyprbar - шапка](https://github.com/hyprwm/hyprland-plugins)</li>
 <li>jq - для работы с JSON<br>
 <code>sudo pacman -S jq</code></li>
 </ul>
@@ -74,33 +56,29 @@ https://github.com/hyprwm/hyprland-plugins</li>
 <p>Устанавливаем jq - для работы с JSON<br>
 <code>sudo pacman -S jq</code></p>
 
-<p>В начало конфига (плагины hyprland. в них нужно будет активировать hyprbar):</p>
 
-<pre>#В начало конфига
-exec-once = hyprpm reload
+
+
+<p>В начало конфига (плагины hyprland. в них нужно будет активировать hyprbar):<br>
+<code>exec-once = hyprpm reload</code></p>
+
+<p>В начало конфига
+<code>exec-once = hyprpm reload</code><br>
+
+#Бинд для разворачивания/сворачивания по номеру
+bind = SUPER, 1, exec, ~/.config/hypr/scripts/hyproll.sh raise 0
 
 #Бинд для "Сворачивания"
 bind = SUPER, A, exec, ~/.config/hypr/hyproll.sh
 
-#пример конфига hyprbars:
-plugin {
-    hyprbars {
-        bar_height = 25
-        icon_on_hover = true
-        bar_color = rgb(252530)
-        col.text = rgb(466670)
-        bar_text_font = Sans
-        bar_text_size = 10
-        bar_text_align = left
-        bar_padding = 10
-        bar_button_padding = 6
-        hyprbars-button = rgb(8c3737), 12, , hyprctl dispatch killactive
-        #Вот это наш корешь
-        hyprbars-button = rgb(3e6963), 12, , ~/.config/hypr/hyproll.sh
-        hyprbars-button = rgb(466670), 12, , hyprctl dispatch togglefloating
-        on_double_click = hyprctl dispatch fullscreen 1
-    }   
-}</pre>
+
+<h2>Быстрая установка</h2>
+
+<pre><code id="installCommand">sudo pacman -S jq && hyprpm update && hyprpm add https://github.com/hyprwm/hyprland-plugins && hyprpm enable hyprbars && git clone https://github.com/SeVe93/hyproll && mkdir -p ~/.config/hypr/scripts && cp hyproll/hyproll.sh ~/.config/hypr/scripts/hyproll.sh && chmod +x ~/.config/hypr/scripts/hyproll.sh && echo "bind = SUPER, PAGEDOWN, exec, ~/.config/hypr/scripts/hyproll.sh raise 0" >> ~/.config/hypr/hyprland.conf && echo "bind = SUPER, PAGEUP, exec, ~/.config/hypr/scripts/hyproll.sh" >> ~/.config/hypr/hyprland.conf && echo "Установка завершена! Что сделано:" && echo "1. Установлен jq для работы с JSON" && echo "2. Обновлен hyprpm и добавлены плагины" && echo "3. Включен hyprbars (шапки окон)" && echo "4. Скачан hyproll для управления окнами" && echo "5. Добавлены бинды: SUPER+PAGEDOWN - развернуть окно, SUPER+PAGEUP - свернуть окно" && echo "6. Скрипт размещен в ~/.config/hypr/scripts/hyproll.sh"</code></pre>
+
+<p>Команда автоматически устанавливает и настраивает плагины для Hyprland: ставит jq для работы с JSON, обновляет менеджер плагинов hyprpm, добавляет официальные плагины Hyprland, активирует hyprbars для заголовков окон, скачивает скрипт hyproll для управления окнами, размещает его в правильной директории, добавляет горячие клавиши (Super+PageDown для разворачивания окон и Super+PageUp для сворачивания) в конфигурационный файл Hyprland.</p>
 
 </body>
 </html>
+
+**Full Changelog**: https://github.com/SeVe93/hyproll/compare/Hyprland...hyproll
