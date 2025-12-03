@@ -69,6 +69,18 @@ https://github.com/user-attachments/assets/e629e042-2dcb-4fc8-8799-b2e3236af6ab"
 <p><strong>3.</strong> Установите jq (если еще не установлен):<br>
 <code>sudo pacman -S jq</code></p>
 
+<h2>Конфигурация</h2>
+# Расстояние между свернутыми окнами (в пикселях)
+WINDOW_SPACING=100
+
+# Высота от нижнего края экрана, куда опускаются окна
+FOLD_HEIGHT_OFFSET=0
+
+# Окна ниже этой линии считаются свернутыми
+FOLD_THRESHOLD=30
+
+SCRIPT_NAME="hyproll.sh"
+
 <p><strong>4.</strong> В конфигурацию Hyprland (<code>~/.config/hypr/hyprland.conf</code>) добавьте:</p>
 
 <h3>Бинды для управления окнами:</h3>
