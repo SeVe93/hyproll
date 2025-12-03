@@ -19,7 +19,6 @@
 
 <p>Работает только при обращении к скрипту: никаких демонов, завершается после исполнения.</p>
 
-https://github.com/user-attachments/assets/e629e042-2dcb-4fc8-8799-b2e3236af6ab" alt="Workflow" style="max-width: 800px;
 
 <h2>Известные проблемы</h2>
 <p>Могут быть проблемы с фокусировкой на активное окно.</p>
@@ -69,16 +68,6 @@ https://github.com/user-attachments/assets/e629e042-2dcb-4fc8-8799-b2e3236af6ab"
 <p><strong>3.</strong> Установите jq (если еще не установлен):<br>
 <code>sudo pacman -S jq</code></p>
 
-<h2>Конфигурация</h2>
-<pre><code>
-# Расстояние между свернутыми окнами (в пикселях)
-WINDOW_SPACING=100</code></pre>
-<pre><code>
-# Высота от нижнего края экрана, куда опускаются окна
-FOLD_HEIGHT_OFFSET=0</code></pre>
-<pre><code>
-# Окна ниже этой линии считаются свернутыми
-FOLD_THRESHOLD=30</code></pre>
 
 <pre><code>SCRIPT_NAME="hyproll.sh"</code></pre>
 
