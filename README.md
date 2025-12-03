@@ -10,7 +10,7 @@
 <p><strong>Стек:</strong> hyprctl + hyprpm + bash + jq<br>
 Очень легкое решение для управления пространством в Hyprland.</p>
 
-https://github.com/user-attachments/assets/2298bf8b-6a8b-4eae-b4ba-7c21cfdc0656" alt="Demo" style="max-width: 800px;
+
 
 <h2>Основная функциональность</h2>
 <p>Делит ширину экрана на равные ячейки с заданной шириной. При запуске скрипта проверяет актуальное положение окон и опускает активное окно ниже уровня экрана в зону свободной ячейки.</p>
@@ -70,16 +70,17 @@ https://github.com/user-attachments/assets/e629e042-2dcb-4fc8-8799-b2e3236af6ab"
 <code>sudo pacman -S jq</code></p>
 
 <h2>Конфигурация</h2>
+<pre><code>
 # Расстояние между свернутыми окнами (в пикселях)
-WINDOW_SPACING=100
-
+WINDOW_SPACING=100</code></pre>
+<pre><code>
 # Высота от нижнего края экрана, куда опускаются окна
-FOLD_HEIGHT_OFFSET=0
-
+FOLD_HEIGHT_OFFSET=0</code></pre>
+<pre><code>
 # Окна ниже этой линии считаются свернутыми
-FOLD_THRESHOLD=30
+FOLD_THRESHOLD=30</code></pre>
 
-SCRIPT_NAME="hyproll.sh"
+<pre><code>SCRIPT_NAME="hyproll.sh"</code></pre>
 
 <p><strong>4.</strong> В конфигурацию Hyprland (<code>~/.config/hypr/hyprland.conf</code>) добавьте:</p>
 
@@ -89,7 +90,9 @@ bind = SUPER, 1, exec, ~/.config/hypr/hyproll.sh raise 0
 bind = SUPER, 2, exec, ~/.config/hypr/hyproll.sh raise 1
 bind = SUPER, 3, exec, ~/.config/hypr/hyproll.sh raise 2
 bind = SUPER, 4, exec, ~/.config/hypr/hyproll.sh raise 3
+</code></pre>
 
+<pre><code>
 # Свернуть/развернуть активное окно
 bind = SUPER, A, exec, ~/.config/hypr/hyproll.sh</code></pre>
 
