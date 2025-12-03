@@ -19,17 +19,17 @@
 #   bind = SUPER, 2, exec, ~/.config/hypr/hyproll.sh raise 1
 #   bind = SUPER, 3, exec, ~/.config/hypr/hyproll.sh raise 2
 #   bind = SUPER, 4, exec, ~/.config/hypr/hyproll.sh raise 3
-
+#
+#УПРАВЛЕНИЕ
+#
 # Расстояние между свернутыми окнами (в пикселях)
 WINDOW_SPACING=100
 
 # Высота от нижнего края экрана, куда опускаются окна
-# 0 = самый низ экрана, больше = выше
 FOLD_HEIGHT_OFFSET=0
 
-# Порог для определения свернутых окон (в пикселях от низа экрана)
 # Окна ниже этой линии считаются свернутыми
-FOLD_THRESHOLD=100
+FOLD_THRESHOLD=30
 
 SCRIPT_NAME="hyproll.sh"
 
