@@ -98,9 +98,9 @@ plugin {
         bar_button_padding = 6
         hyprbars-button = rgb(8c3737), 12, , hyprctl dispatch killactive
         hyprbars-button = rgb(466670), 12, , hyprctl dispatch togglefloating
-        hyprbars-button = rgb(3e6963), 12, , ~/.config/hypr/hyproll.sh
-        on_double_click = hyprctl dispatch fullscreen 1
-    }
+        hyprbars-button = rgb(3e6963), 12, , hyprctl dispatch fullscreen 1
+        on_double_click = ~/.config/hypr/hyproll.sh
+    }   
 }</code></pre>
 
 <h2>Быстрая установка</h2>
