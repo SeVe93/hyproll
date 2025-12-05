@@ -22,7 +22,7 @@
 #
 #УПРАВЛЕНИЕ
 #
-# Расстояние между свернутыми окнами (в пикселях)
+# Расстояние между свернутых окон (в пикселях)
 WINDOW_SPACING=100
 
 # Высота от нижнего края экрана, куда опускаются окна
@@ -62,8 +62,8 @@ get_free_slot() {
     echo $((max_slot + 1))
 }
 
-# Функция для обновления всех свернутых окон
-update_folded_windows() {
+# Функция для сортировки окон ТОЛЬКО при добавлении нового
+sort_folded_windows_on_add() {
     # Получаем все свернутые окна
     windows=$(hyprctl clients -j | jq "map(select(.workspace.id == $WORKSPACE_ID and .at[1] >= $((monitor_height - FOLD_THRESHOLD))))")
     
@@ -151,6 +151,7 @@ toggle_active_window() {
             # Удаляем из слотов
             sed -i "/:$address$/d" "$SLOTS_FILE" 2>/dev/null
             
+            
         else
             # Окно не свернуто - сворачиваем
             
@@ -166,10 +167,10 @@ toggle_active_window() {
             
             # Добавляем в слоты
             echo "$slot:$address" >> "$SLOTS_FILE"
+            
+            # ТОЛЬКО ТУТ СОРТИРУЕМ!
+            sort_folded_windows_on_add
         fi
-        
-        # Обновляем все свернутые окна
-        update_folded_windows
     fi
 }
 
@@ -177,25 +178,22 @@ toggle_active_window() {
 raise_window() {
     local slot_number=$1
     
-    # Обновляем список свернутых окон
-    update_folded_windows
-    
+    # Сначала проверяем, есть ли уже окно в этом слоте
     if [ -f "$SLOTS_FILE" ]; then
-        # Проверяем, есть ли окно в этом слоте
-        line=$(grep "^$slot_number:" "$SLOTS_FILE")
+        slot_line=$(grep "^$slot_number:" "$SLOTS_FILE" 2>/dev/null)
         
-        if [ -n "$line" ]; then
-            # Есть окно - разворачиваем его
-            address=$(echo "$line" | cut -d: -f2)
+        if [ -n "$slot_line" ]; then
+            # В слоте есть окно - разворачиваем его
+            address=$(echo "$slot_line" | cut -d: -f2)
             
             # Восстанавливаем позицию
             restore_window_position "$address"
             
             # Удаляем из слотов
-            sed -i "/^$slot_number:/d" "$SLOTS_FILE"
+            sed -i "/^$slot_number:/d" "$SLOTS_FILE" 2>/dev/null
             
-            # Обновляем все свернутые окна
-            update_folded_windows
+            # НЕ сортируем остальные окна!
+            
         else
             # Слот пустой - сворачиваем активное окно в этот слот
             active_window=$(hyprctl activewindow -j)
@@ -216,15 +214,35 @@ raise_window() {
                     # Добавляем в слоты
                     echo "$slot_number:$address" >> "$SLOTS_FILE"
                     
-                    # Обновляем все свернутые окна
-                    update_folded_windows
+                    # НЕ сортируем! Просто добавили в свободный слот
                 fi
+            fi
+        fi
+    else
+        # Файла слотов нет - сворачиваем активное окно
+        active_window=$(hyprctl activewindow -j)
+        if [ "$active_window" != "null" ]; then
+            address=$(echo "$active_window" | jq -r '.address')
+            current_x=$(echo "$active_window" | jq -r '.at[0]')
+            current_y=$(echo "$active_window" | jq -r '.at[1]')
+            
+            # Проверяем, не свернуто ли уже
+            if [ $current_y -lt $((monitor_height - FOLD_THRESHOLD)) ]; then
+                # Сохраняем позицию (не свернутую)
+                save_window_original_position "$address"
+                
+                # Сворачиваем в указанный слот
+                position=$((slot_number * WINDOW_SPACING))
+                hyprctl dispatch movewindowpixel exact $position $FOLD_FINAL_HEIGHT,address:$address
+                
+                # Создаем файл слотов
+                echo "$slot_number:$address" > "$SLOTS_FILE"
             fi
         fi
     fi
 }
 
-# Главная функция
+
 main() {
     case "$1" in
         "raise")
@@ -236,5 +254,5 @@ main() {
     esac
 }
 
-# Запуск скрипта
+
 main "$@"
